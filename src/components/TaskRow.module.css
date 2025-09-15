@@ -1,0 +1,21 @@
+/* Stili generali della riga e celle */
+.row td {
+  border: 1px solid gray;
+  padding: 0.5rem;
+}
+
+/* Colori status */
+.statusToDo {
+  background-color: red;
+  color: white;
+}
+
+.statusDoing {
+  background-color: yellow;
+  color: black;
+}
+
+.statusDone {
+  background-color: green;
+  color: white;
+}
