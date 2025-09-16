@@ -54,10 +54,25 @@ function useTask() {
     }, []);
 
     const addTask = async (task) => {
-        // esempio POST
-        const base = import.meta.env.VITE_API_URL || "";
-        const res = await axios.post(`${base}/tasks`, task);
-        dispatch({ type: "ADD_TASK", payload: res.data });
+        try {
+            const base = import.meta.env.VITE_API_URL || "http://localhost:3001"
+            const res = await axios.post(`${base}/tasks`, task);
+            const data = res.data;
+
+            if (data.success) {
+                dispatch({ type: "ADD_TASK", payload: data.task });
+            } else{
+                throw new Error (data.message || "Errore nella creazione della Task");
+            }
+
+        }catch (error){
+            console.error("Errore in addTask:", error);
+            throw error.response?.data?.message ?
+            new Error (error.response.data.message) :
+            error;
+        }
+
+       
     };
 
     const removeTask = async (taskId) => {

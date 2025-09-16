@@ -1,96 +1,87 @@
 import { useState, useRef } from "react"
+import useTask from "../assets/customhooks/useTasks";
 
 
-
-function AddTask(){
-
+function AddTask() {
+    //useState
     const [title, setTitle] = useState();
-
+    //useTask
+    const { addTask } = useTask()
+    //useRef
     const descriptionRef = useRef("");
     const taskTypeRef = useRef("To do");
 
+
     const symbols = "!@#$%^&*()-_=+[]{}|;:'\\\",.<>?/`~";
 
-    function handleSubmit(e){
-       e.preventDefault();
+    async function handleSubmit(e) {
+        e.preventDefault();
 
-       //controllo titolo non vuoto
-       if(!title.trim()){
-        alert("Il titolo non può essere vuoto")
-        return;
-       }
-
-       //controllo simboli speciali
-       for(let char of title){
-        if(symbols.includes(char)){
-            alert("Il titolo non può contenere caratteri speciali")
+        //controllo titolo non vuoto
+        if (!title.trim()) {
+            alert("Il titolo non può essere vuoto")
             return;
         }
-       }
 
-       const newTask = {
-        title, 
-        description: descriptionRef.current.value,
-        status: taskTypeRef.current.value,
-        createdAt: new Date().toISOString()
-       };
+        //controllo simboli speciali
+        for (let char of title) {
+            if (symbols.includes(char)) {
+                alert("Il titolo non può contenere caratteri speciali")
+                return;
+            }
+        }
 
-       console.log("Nuova Task:", newTask)
+        const newTask = {
+            title,
+            description: descriptionRef.current.value,
+            status: taskTypeRef.current.value,
+        };
+
+        try {
+            await addTask(newTask);
+            alert("Task creata con successo");
+
+            setTitle("");
+            descriptionRef.current.value = "";
+            taskTypeRef.current.value = "To Do";
+
+        }catch(error){
+            alert("Errore:", error.message);
+        }
     }
 
-    return(
+    return (
         <div>
             <h2>AGGIUNGI UNA NUOVA TASK</h2>
             <form >
-                <label htmlForfor="newTask">Nuova Task</label>
-                <input 
-                type="text" 
-                placeholder="Scrivi qui la tua nuova task ..." 
-                id = "newTask"
-                value = {title}
-                OnChange = {(e) => setTitle(e.target.value)} 
+                <label htmlFor="newTask">Nuova Task</label>
+                <input
+                    type="text"
+                    placeholder="Scrivi qui la tua nuova task ..."
+                    id="newTask"
+                    value={title}
+                    OnChange={(e) => setTitle(e.target.value)}
                 />
 
-                <label htmlForfor="description">Descrizione</label>
-                <textarea 
-                type="text" 
-                placeholder="Scrivi qui la descrizione" 
-                id = "newTask" 
-                ref= {descriptionRef} 
+                <label htmlFor="description">Descrizione</label>
+                <textarea
+                    type="text"
+                    placeholder="Scrivi qui la descrizione"
+                    id="newTask"
+                    ref={descriptionRef}
                 />
-                
-                <label htmlForfor="taskType" >Tipologia Task</label>
-                <select name = "taskType" id = "taskType" ref = {taskTypeRef} defaultValue="To do" >
+
+                <label htmlFor="taskType" >Tipologia Task</label>
+                <select name="taskType" id="taskType" ref={taskTypeRef} defaultValue="To do" >
                     <option value="To do"> Da Fare </option>
                     <option value="Doing"> In Corso </option>
                     <option value="Done"> Fatte </option>
                 </select>
 
-                <button type="submit" onClcick = {handleSubmit}> Aggiungi task </button>
+                <button type="submit" onClcick={handleSubmit}> Aggiungi task </button>
             </form>
         </div>
     );
 };
 
 export default AddTask;
-
-
-
-// Aggiornare la pagina AddTask.jsx per contenere un form con i seguenti campi:
-
-//     Nome del task (title) → Input controllato (useState).
-//     Descrizione (description) → Textarea non controllata (useRef).
-//     Stato (status) → Select non controllata (useRef), con opzioni "To do", "Doing", "Done", e valore predefinito "To do".
-
-// Validare il campo Nome (title):
-
-//     Il campo non può essere vuoto.
-//     Non può contenere simboli speciali.
-//     Se il valore è errato, mostrare un messaggio di errore.
-//     Utilizzare una costante con i caratteri vietati:
-
-// const symbols = "!@#$%^&*()-_=+[]{}|;:'\\",.<>?/`~";
-
-// Gestione del Submit del Form:
-
-//     Al click del bottone "Aggiungi Task", il form deve SOLO stampare in console l’oggetto task con i valori inseriti (NON deve ancora essere inviata la richiesta all’API).
