@@ -1,11 +1,72 @@
+import { useState, useRef } from "react"
+
+
+
 function AddTask(){
+
+    const [title, setTitle] = useState();
+
+    const descriptionRef = useRef("");
+    const taskTypeRef = useRef("To do");
+
+    const symbols = "!@#$%^&*()-_=+[]{}|;:'\\\",.<>?/`~";
+
+    function handleSubmit(e){
+       e.preventDefault();
+
+       //controllo titolo non vuoto
+       if(!title.trim()){
+        alert("Il titolo non può essere vuoto")
+        return;
+       }
+
+       //controllo simboli speciali
+       for(let char of title){
+        if(symbols.includes(char)){
+            alert("Il titolo non può contenere caratteri speciali")
+            return;
+        }
+       }
+
+       const newTask = {
+        title, 
+        description: descriptionRef.current.value,
+        status: taskTypeRef.current.value,
+        createdAt: new Date().toISOString()
+       };
+
+       console.log("Nuova Task:", newTask)
+    }
 
     return(
         <div>
             <h2>AGGIUNGI UNA NUOVA TASK</h2>
             <form >
-                <input type="text" placeholder="Scrivi qui la tua nuova task ..." />
-                <button type="submit" > Aggiungi </button>
+                <label htmlForfor="newTask">Nuova Task</label>
+                <input 
+                type="text" 
+                placeholder="Scrivi qui la tua nuova task ..." 
+                id = "newTask"
+                value = {title}
+                OnChange = {(e) => setTitle(e.target.value)} 
+                />
+
+                <label htmlForfor="description">Descrizione</label>
+                <textarea 
+                type="text" 
+                placeholder="Scrivi qui la descrizione" 
+                id = "newTask" 
+                ref= {descriptionRef} 
+                />
+                
+                <label htmlForfor="taskType" >Tipologia Task</label>
+                <select name = "taskType" id = "taskType" ref = {taskTypeRef} defaultValue="To do" >
+                    <option value="To do"> Da Fare </option>
+                    <option value="Doing"> In Corso </option>
+                    <option value="Done"> Fatte </option>
+                </select>
+
+                <button type="submit" onClcick = {handleSubmit}> Aggiungi task </button>
             </form>
         </div>
     );
