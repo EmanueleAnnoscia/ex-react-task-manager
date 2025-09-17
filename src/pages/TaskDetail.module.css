@@ -1,0 +1,55 @@
+/* Container principale */
+.container {
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background-color: #f9f9f9;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  font-family: "Inter", sans-serif;
+}
+
+/* Titolo task */
+h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  color: #222;
+}
+
+/* Dettagli */
+p {
+  font-size: 1rem;
+  color: #555;
+  margin: 0.5rem 0;
+}
+
+/* Pulsanti principali */
+button {
+  padding: 0.6rem 1.2rem;
+  margin-right: 0.8rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.2s;
+}
+
+/* Pulsante modifica */
+button.edit {
+  background-color: #007bff;
+  color: white;
+}
+
+button.edit:hover {
+  background-color: #0056b3;
+}
+
+/* Pulsante elimina */
+button.delete {
+  background-color: #dc3545;
+  color: white;
+}
+
+button.delete:hover {
+  background-color: #a71d2a;
+}

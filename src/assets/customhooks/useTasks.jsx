@@ -61,41 +61,54 @@ function useTask() {
 
             if (data.success) {
                 dispatch({ type: "ADD_TASK", payload: data.task });
-            } else{
-                throw new Error (data.message || "Errore nella creazione della Task");
+            } else {
+                throw new Error(data.message || "Errore nella creazione della Task");
             }
 
-        }catch (error){
+        } catch (error) {
             console.error("Errore in addTask:", error);
             throw error.response?.data?.message ?
-            new Error (error.response.data.message) :
-            error;
+                new Error(error.response.data.message) :
+                error;
         }
 
-       
+
     };
 
     const removeTask = async (taskId) => {
-       try {
+        try {
             const base = import.meta.env.VITE_API_URL || "http://localhost:3001"
             const res = await axios.delete(`${base}/tasks/${taskId}`);
 
             //aggiornamento dello stato rimuovendo la task
             dispatch({ type: "REMOVE_TASK", payload: taskId });
 
-        }catch (error){
+        } catch (error) {
             console.error("Errore in removeTask:", error);
             throw error.response?.data?.message ?
-            new Error (error.response.data.message) :
-            error;
+                new Error(error.response.data.message) :
+                error;
         }
     };
 
     const updateTask = async (updatedTask) => {
-        // esempio PUT
-        const base = import.meta.env.VITE_API_URL || "";
-        const res = await axios.put(`${base}/tasks/${updatedTask.id}`, updatedTask);
-        dispatch({ type: "UPDATE_TASK", payload: updatedTask });
+        try {
+            const base = import.meta.env.VITE_API_URL || "http://localhost:3001";
+            const res = await axios.put(`${base}/tasks/${updatedTask.id}`, updatedTask);
+            const data = res.data;
+
+
+            // Se il backend restituisce un oggetto 'task', usalo
+            // altrimenti fallback a updatedTask
+            const taskToUpdate = data.task || updatedTask;
+
+            dispatch({ type: "UPDATE_TASK", payload: taskToUpdate });
+        }catch(err){
+            console.error("Errore in updateTask:", err);
+            throw err.response?.data?.message ?
+            new Error(err.response.data.message) :
+            err;
+        }
     };
 
 
