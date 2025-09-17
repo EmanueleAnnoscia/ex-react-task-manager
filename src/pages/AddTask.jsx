@@ -4,7 +4,7 @@ import useTask from "../assets/customhooks/useTasks";
 
 function AddTask() {
     //useState
-    const [title, setTitle] = useState();
+    const [title, setTitle] = useState("");
     //useTask
     const { addTask } = useTask()
     //useRef
@@ -53,14 +53,14 @@ function AddTask() {
     return (
         <div>
             <h2>AGGIUNGI UNA NUOVA TASK</h2>
-            <form >
+            <form onSubmit={handleSubmit} >
                 <label htmlFor="newTask">Nuova Task</label>
                 <input
                     type="text"
                     placeholder="Scrivi qui la tua nuova task ..."
                     id="newTask"
                     value={title}
-                    OnChange={(e) => setTitle(e.target.value)}
+                    onChange={(e) => setTitle(e.target.value)}
                 />
 
                 <label htmlFor="description">Descrizione</label>
@@ -78,7 +78,7 @@ function AddTask() {
                     <option value="Done"> Fatte </option>
                 </select>
 
-                <button type="submit" onClcick={handleSubmit}> Aggiungi task </button>
+                <button type="submit"> Aggiungi task </button>
             </form>
         </div>
     );

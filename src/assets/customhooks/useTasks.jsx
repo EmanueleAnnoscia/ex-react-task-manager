@@ -20,7 +20,7 @@ function tasksReducer(state, action) {
         case "REMOVE_TASK":
             return {
                 ...state,
-                tasks: state.task.filter((t) => t.id) !== action.payload, //state.tasks elenco di tutte le task correnti a cui gli vado ad esguire il filter che avrà come condizione prendi ogni task t tienila nell'array solo se il suo id è diverso da quello che voglio elminare action.payload
+                tasks: state.tasks.filter((t) => t.id !== action.payload), //state.tasks elenco di tutte le task correnti a cui gli vado ad esguire il filter che avrà come condizione prendi ogni task t tienila nell'array solo se il suo id è diverso da quello che voglio elminare action.payload
             };
         case "UPDATE_TASK":
             return {
@@ -76,10 +76,19 @@ function useTask() {
     };
 
     const removeTask = async (taskId) => {
-        // esempio DELETE
-        const base = import.meta.env.VITE_API_URL || "";
-        await axios.delete(`${base}/tasks/${taskId}`);
-        dispatch({ type: "REMOVE_TASK", payload: taskId });
+       try {
+            const base = import.meta.env.VITE_API_URL || "http://localhost:3001"
+            const res = await axios.delete(`${base}/tasks/${taskId}`);
+
+            //aggiornamento dello stato rimuovendo la task
+            dispatch({ type: "REMOVE_TASK", payload: taskId });
+
+        }catch (error){
+            console.error("Errore in removeTask:", error);
+            throw error.response?.data?.message ?
+            new Error (error.response.data.message) :
+            error;
+        }
     };
 
     const updateTask = async (updatedTask) => {
