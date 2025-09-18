@@ -5,11 +5,14 @@ import styles from "./TasksList.module.css";
 
 function TaskList() {
   const { tasks, loading, error } = useContext(GlobalContext);
-
-  const [sortBy, setSortBy] = useState("createdAt")
+  //------------------------variabili State--------------------------
+  const [sortBy, setSortBy] = useState("createdAt");
   const [sortOrder, setSortOrder] = useState(1);
+  const [search, setSearch] = useState("");
+  const [debounceSearch, setDebounceSearch] = useState("");
 
-  //function
+  //--------------FUNZIONI--------------------------------
+  //funzione "valore di ricerca"
   const handleSort = (column) => {
     if (sortBy === column) {
       setSortOrder((prev) => prev * -1);
@@ -18,10 +21,15 @@ function TaskList() {
       setSortOrder(1);
     }
   }
-
-  const sortedTasks = useMemo(() => {
+  //funzione di ordinamento
+  const filteredAndSortedTasks = useMemo(() => {
     const statusOrder = { "To do": 0, "Doing": 1, "Done": 2 };
-    return [...tasks].sort((a, b) => {
+
+    //filtraggio case-insensitive
+    const filtered = tasks.filter((t) => t.title.toLowerCase().includes(debounceSearch.toLowerCase()));
+
+    //ordinamento
+    return [...filtered].sort((a, b) => {
       let result = 0;
 
       if (sortBy === "title") {
@@ -37,14 +45,29 @@ function TaskList() {
       return result * sortOrder;
     })
 
-  }, [tasks, sortBy, sortOrder])
+  }, [tasks, sortBy, sortOrder, debounceSearch])
 
-
+  
   //lettura iniziale dell'array tasks
   useEffect(() => {
     console.log("Tasks dal context:", tasks);
   }, [tasks]);
 
+  //al cambiamento di search 
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebounceSearch(search);
+    }, 300)
+
+    return () => {
+      clearTimeout(handler); //resettato fino a quando l'utente continuerà a scrivere
+
+    }
+  }, [search])
+
+
+
+  //validazione su tasks
   if (loading) return <p>Caricamento...</p>;
   if (error) return <p>Errore nel recupero</p>;
   if (tasks.length === 0) return <p>Nessuna Task in corso</p>;
@@ -52,16 +75,23 @@ function TaskList() {
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>LISTA DELLE TASK</h1>
+      <input
+        type="text"
+        placeholder="Cerca qui la tua task"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
+
       <table className={styles.table}>
         <thead>
           <tr>
-            <th onClick = {() => handleSort("title")}>Nome {sortBy === "title" && (sortOrder === 1 ? "↑" : "↓")} </th>
-            <th onClick = {() => handleSort ("status")}>Stato {sortBy === "status" && (sortOrder === 1 ? "↑" : "↓")}</th>
-            <th onClick = {() => handleSort ("createdAt")}>Data di Creazione {sortBy === "createdAt" && (sortOrder === 1 ? "↑" : "↓")}</th>
+            <th onClick={() => handleSort("title")}>Nome {sortBy === "title" ? (sortOrder === 1 ? "↑" : "↓") : null} </th>
+            <th onClick={() => handleSort("status")}>Stato {sortBy === "status" ? (sortOrder === 1 ? "↑" : "↓") : null}</th>
+            <th onClick={() => handleSort("createdAt")}>Data di Creazione {sortBy === "createdAt" ? (sortOrder === 1 ? "↑" : "↓") : null}</th>
           </tr>
         </thead>
         <tbody>
-          {sortedTasks.map((task) => (
+          {filteredAndSortedTasks.map((task) => (
             <TaskRow key={task.id ?? task._id} task={task} />
           ))}
         </tbody>
