@@ -1,6 +1,8 @@
 import { useState, useRef } from "react";
 import styles from "./HoldButton.module.css"
 
+//preso questo componente come spunto
+
 function HoldButton({ onHoldComplete, holdTime = 3000, label = "Elimina" }) {
     const [progress, setProgress] = useState()
     const timeRef = useRef(null);

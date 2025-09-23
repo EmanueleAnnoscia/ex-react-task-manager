@@ -5,12 +5,12 @@ import useTask from "../assets/customhooks/useTasks";
 const GlobalContext = createContext();
 
 function GlobalProvider({ children }) {
-  const { tasks, loading, error, addTask, removeTask, updateTask} = useTask()
+  const taskHook = useTask()
 
-  
+  console.log(taskHook)
 
   return (
-    <GlobalContext.Provider value={{ tasks, loading, error, addTask, removeTask, updateTask }}>
+    <GlobalContext.Provider value={taskHook}>
       {children}
     </GlobalContext.Provider>
   );

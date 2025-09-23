@@ -9,7 +9,10 @@ const initialState = {
 };
 
 function tasksReducer(state, action) {
-    // console.log(state)
+    console.log(state)
+    // console.log(action)
+
+
     switch (action.type) {
         case "FETCH_SUCCESS":
             return { ...state, tasks: action.payload, loading: false, error: null };
@@ -40,6 +43,8 @@ function useTask() {
         const source = axios.CancelToken.source();
         const baseURL = import.meta.env.VITE_API_URL || "";
 
+        // console.log(source)
+        // console.log(baseURL)
 
         axios
             .get(`${baseURL}/tasks`, { cancelToken: source.token })
